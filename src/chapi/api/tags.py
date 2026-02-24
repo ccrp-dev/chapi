@@ -19,19 +19,24 @@ class Tag(BaseModel, frozen=True):
 
 
 class Tags(StrEnum):
+    tag: Tag
+
     ROOT = 'root', 'Basic API endpoints'
 
-    def __init__(
-        self,
+    def __new__(
+        cls,
         name: str,
         description: str | None = None,
         external_docs: TagDocs | None = None,
-    ) -> None:
-        self.tag = Tag(
+    ) -> Tags:
+        obj = str.__new__(cls, name)
+        obj._value_ = name
+        obj.tag = Tag(
             name=name,
             description=description,
             external_docs=external_docs,
         )
+        return obj
 
     @classmethod
     def metadata(cls) -> list[dict[str, Any]]:
